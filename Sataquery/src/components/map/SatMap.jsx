@@ -39,14 +39,15 @@ const TILES = {
     subdomains: '',
     className:  'map-tiles-dark',
   },
-  // Real satellite imagery — Esri Clarity (highest quality, no key needed)
+  // Real satellite imagery — Esri Clarity (actual aerial/satellite photos, no key)
   satellite: {
     url:        'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr:       'Powered by Esri &mdash; Source: Esri, Maxar, Earthstar Geographics',
+    attr:       'Powered by Esri | Maxar, Earthstar Geographics',
     maxZoom:    19,
     subdomains: '',
+    crossOrigin: true,
   },
-  // Labels overlay on satellite
+  // Labels overlay on satellite — OSM labels only
   labels: {
     url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:       '',
@@ -99,20 +100,17 @@ export default function SatMap({
 
     // Start with satellite tiles
     const tileMode = viewMode === 'map' ? 'map' : 'satellite'
-    tileLayerRef.current = L.tileLayer(TILES[tileMode].url, {
-      attribution: TILES[tileMode].attr,
-      maxZoom:     TILES[tileMode].maxZoom,
-      subdomains:  TILES[tileMode].subdomains || 'abc',
+    const tileCfg = TILES[tileMode]
+    tileLayerRef.current = L.tileLayer(tileCfg.url, {
+      attribution: tileCfg.attr,
+      maxZoom:     tileCfg.maxZoom,
+      subdomains:  tileCfg.subdomains || '',
+      className:   tileCfg.className  || '',
+      crossOrigin: tileCfg.crossOrigin || false,
     }).addTo(map)
 
-    // Labels overlay for satellite mode
-    if (tileMode === 'satellite') {
-      labelLayerRef.current = L.tileLayer(TILES.labels.url, {
-        attribution: '',
-        maxZoom:     19,
-        opacity:     0.8,
-      }).addTo(map)
-    }
+    // No labels overlay — satellite tiles already contain labels
+    labelLayerRef.current = null
 
     // Mouse-move for coordinate readout
     map.on('mousemove', (e) => {
