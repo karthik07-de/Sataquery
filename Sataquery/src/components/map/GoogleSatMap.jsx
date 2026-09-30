@@ -30,16 +30,18 @@ L.Icon.Default.mergeOptions({
 })
 
 const TILE_PROVIDERS = {
-  // Google Maps satellite tiles — no API key required
+  // OpenStreetMap — 100% free, no API key, no watermark, always works
   satellite: {
-    url:        'https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-    attr:       '&copy; Google',
-    subdomains: ['0', '1', '2', '3'],
+    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: '',
   },
-  // Carto Dark road map — no API key required
+  // OSM with dark invert filter for dark mode
   dark: {
-    url:  'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attr: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
+    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    subdomains: '',
+    className:  'map-tiles-dark',
   },
 }
 
@@ -72,8 +74,9 @@ export default function GoogleSatMap({
 
     L.tileLayer(provider.url, {
       attribution: provider.attr,
-      maxZoom:     21,
-      subdomains:  provider.subdomains || 'abc',
+      maxZoom:     19,
+      subdomains:  provider.subdomains || '',
+      className:   provider.className || '',
     }).addTo(map)
 
     map.on('mousemove', e => {

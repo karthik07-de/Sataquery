@@ -29,26 +29,30 @@ L.Icon.Default.mergeOptions({
   shadowUrl:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-/* ── Tile providers ── */
+/* ── Tile providers — 100% free, no API key, no watermark ── */
 const TILES = {
-  // Dark road map — Carto Dark Matter (free, no key)
+  // Dark map — OSM with dark CSS filter overlay
   map: {
-    url:     'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
-    attr:    '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/">CARTO</a>',
-    maxZoom: 20,
+    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom:    19,
+    subdomains: '',
+    className:  'map-tiles-dark',
   },
-  // Real satellite imagery — Google Maps tile CDN (no API key required)
+  // Satellite — OpenStreetMap Humanitarian (detailed, free, no watermark)
   satellite: {
-    url:     'https://mt{s}.google.com/vt/lyrs=s&x={x}&y={y}&z={z}',
-    attr:    '&copy; Google',
-    maxZoom: 21,
-    subdomains: ['0', '1', '2', '3'],
+    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    maxZoom:    19,
+    subdomains: '',
   },
-  // Labels overlay on top of satellite
+  // Labels overlay (OSM-based, no key)
   labels: {
-    url:     'https://{s}.basemaps.cartocdn.com/dark_only_labels/{z}/{x}/{y}{r}.png',
-    attr:    '',
-    maxZoom: 20,
+    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attr:       '',
+    maxZoom:    19,
+    subdomains: '',
+    opacity:    0,  // OSM already includes labels, no extra overlay needed
   },
 }
 

@@ -92,6 +92,11 @@ aside.pointer-events-auto, header.pointer-events-auto { pointer-events: auto !im
    We render our own controls so we can safely suppress all default UI.
    ──────────────────────────────────────────────────────────────────── */
 
+/* ── OSM dark tile filter (map mode only) ── */
+.map-tiles-dark {
+  filter: invert(100%) hue-rotate(180deg) brightness(95%) contrast(90%);
+}
+
 /* ── Custom scrollbar ── */
 .scroll-thin::-webkit-scrollbar               { width: 4px; height: 4px; }
 .scroll-thin::-webkit-scrollbar-track         { background: transparent; }
