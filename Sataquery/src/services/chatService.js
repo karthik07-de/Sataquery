@@ -32,12 +32,12 @@ const IMAGE_SYSTEM_PROMPT = TEXT_SYSTEM_PROMPT + `
 
 // Current stable models available via AI Studio AQ. keys (as of Sep 2026).
 // Gemini model cascade — tried in order until one succeeds
-// gemini-3.5-flash is newest; fall back to older stable models on 503 overload
+// Uses only models confirmed available via AI Studio AQ. keys
 const GEMINI_MODELS = [
-  'gemini-3.5-flash',
-  'gemini-2.0-flash',
-  'gemini-1.5-flash',
-  'gemini-1.5-flash-8b',
+  'gemini-3.8-flash',    // latest stable (Sep 2026)
+  'gemini-3.5-flash',    // previous stable
+  'gemini-2.5-flash',    // widely available
+  'gemini-2.0-flash-lite', // lightweight fallback
 ]
 const GEMINI_MODEL = GEMINI_MODELS[0]
 const GEMINI_FALLBACK_MODEL = GEMINI_MODELS[1]

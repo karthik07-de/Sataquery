@@ -30,13 +30,13 @@ L.Icon.Default.mergeOptions({
 })
 
 const TILE_PROVIDERS = {
-  // OpenStreetMap — 100% free, no API key, no watermark, always works
+  // Esri Clarity — real satellite imagery, no key, no watermark
   satellite: {
-    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    url:        'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr:       'Powered by Esri &mdash; Source: Esri, Maxar, Earthstar Geographics',
     subdomains: '',
   },
-  // OSM with dark invert filter for dark mode
+  // OSM dark for dark mode
   dark: {
     url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',

@@ -29,9 +29,9 @@ L.Icon.Default.mergeOptions({
   shadowUrl:     'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
 })
 
-/* ── Tile providers — 100% free, no API key, no watermark ── */
+/* ── Tile providers — no API key required ── */
 const TILES = {
-  // Dark map — OSM with dark CSS filter overlay
+  // Dark road map — OSM with dark CSS filter
   map: {
     url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
@@ -39,20 +39,20 @@ const TILES = {
     subdomains: '',
     className:  'map-tiles-dark',
   },
-  // Satellite — OpenStreetMap Humanitarian (detailed, free, no watermark)
+  // Real satellite imagery — Esri Clarity (highest quality, no key needed)
   satellite: {
-    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+    url:        'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr:       'Powered by Esri &mdash; Source: Esri, Maxar, Earthstar Geographics',
     maxZoom:    19,
     subdomains: '',
   },
-  // Labels overlay (OSM-based, no key)
+  // Labels overlay on satellite
   labels: {
     url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:       '',
     maxZoom:    19,
     subdomains: '',
-    opacity:    0,  // OSM already includes labels, no extra overlay needed
+    opacity:    0,
   },
 }
 
