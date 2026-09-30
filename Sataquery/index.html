@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en" class="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SatQuery AI – Enterprise Geospatial Intelligence</title>
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap"
+      rel="stylesheet"
+    />
+
+    <!--
+      Google Maps JavaScript API
+      ─────────────────────────────────────────────────────────────────────
+      The API is loaded dynamically by GoogleEarthMap.jsx using a singleton
+      loader so it is only fetched once regardless of how many map components
+      are mounted. The script tag is injected at runtime with the key read
+      from import.meta.env.VITE_GOOGLE_MAPS_API_KEY.
+
+      Required APIs — enable all of these in Google Cloud Console:
+        • Maps JavaScript API   (core map rendering)
+        • Street View Static API (360° panorama imagery)
+        • Places API            (location search autocomplete)
+        • Geocoding API         (converting place IDs → lat/lng)
+
+      API key restriction (recommended):
+        In Google Cloud Console → Credentials → your key → Application
+        restrictions → HTTP referrers. Add your domain(s):
+          https://your-domain.com/*
+          http://localhost:5173/*   (for local development)
+
+      Environment variable:
+        Set VITE_GOOGLE_MAPS_API_KEY in your .env file.
+        See .env.example for the full setup guide.
+      ─────────────────────────────────────────────────────────────────────
+    -->
+
+    <!-- Three.js is bundled via npm — no CDN script needed -->
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>

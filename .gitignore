@@ -1,0 +1,66 @@
+# ── Environment / secrets ──────────────────────────────────────────
+.env
+.env.local
+.env.*.local
+backend/.env
+
+# ── Python / backend ───────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+*.egg-info/
+dist/
+build/
+*.egg
+.venv/
+venv/
+env/
+*.pyc
+
+# Backend runtime files (large / generated / secret)
+backend/.venv/
+backend/satquery.db
+backend/uploads/
+backend/outputs/
+backend/models/
+backend/reports/
+backend/backend.log
+backend/pip-install.log
+backend/.pytest_cache/
+
+# ── Node / frontend ────────────────────────────────────────────────
+node_modules/
+Sataquery/node_modules/
+Sataquery/dist/
+Sataquery/dist-ssr/
+
+# ── Logs ───────────────────────────────────────────────────────────
+*.log
+logs/
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# ── Editor / OS ────────────────────────────────────────────────────
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+Thumbs.db
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ── Misc ───────────────────────────────────────────────────────────
+*.local
+opencode.json
+.freebuff/
+*.env.bak
+*.env.test.forced
+Sataquery/.env.bak
+Sataquery/.env.test.forced

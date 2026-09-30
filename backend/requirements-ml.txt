@@ -1,0 +1,16 @@
+# Optional / heavy ML stack — NOT installed by default.
+# Install separately when real deep-learning models are needed:
+#
+#   pip install -r requirements-ml.txt
+#
+# CPU-only PyTorch wheels:
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   pip install ultralytics
+#   pip install segment-anything
+#
+# After installing, download model weights (see scripts/download_models.py)
+# and set MODEL_DIR / BUILDING_MODEL_PATH in .env.
+torch
+torchvision
+ultralytics
+segment-anything
