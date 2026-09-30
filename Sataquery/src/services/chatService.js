@@ -31,9 +31,16 @@ const IMAGE_SYSTEM_PROMPT = TEXT_SYSTEM_PROMPT + `
   features of interest. Be concrete about what you can and cannot see.`
 
 // Current stable models available via AI Studio AQ. keys (as of Sep 2026).
-// Current Gemini models available via AI Studio (as of Sep 2026)
-const GEMINI_MODEL = 'gemini-3.5-flash'
-const GEMINI_FALLBACK_MODEL = 'gemini-3.5-flash'  // same — no lite variant yet
+// Gemini model cascade — tried in order until one succeeds
+// gemini-3.5-flash is newest; fall back to older stable models on 503 overload
+const GEMINI_MODELS = [
+  'gemini-3.5-flash',
+  'gemini-2.0-flash',
+  'gemini-1.5-flash',
+  'gemini-1.5-flash-8b',
+]
+const GEMINI_MODEL = GEMINI_MODELS[0]
+const GEMINI_FALLBACK_MODEL = GEMINI_MODELS[1]
 const GROQ_MODEL = 'llama-3.3-70b-versatile'
 // Multimodal model used when the user attaches an image (Groq vision).
 // Docs: https://console.groq.com/docs/vision
@@ -132,15 +139,23 @@ async function askGemini(history, userMessage, pageHint, image) {
     },
   })
 
-  let response
-  try {
-    response = await call(GEMINI_MODEL)
-  } catch (err) {
-    // Older API keys may not have 2.5 access — retry once on the fallback model.
-    if (!/404|not found|not supported/i.test(String(err?.message || err))) throw err
-    response = await call(GEMINI_FALLBACK_MODEL)
+  // Try each model in the cascade — 503 overload / 404 unavailable → next model
+  let lastErr
+  for (const model of GEMINI_MODELS) {
+    try {
+      const response = await call(model)
+      return response.text?.trim() || 'No response received.'
+    } catch (err) {
+      const msg = String(err?.message || err)
+      const isRetryable = /503|overload|high demand|unavailable|quota|429|404|not found|not supported/i.test(msg)
+      if (!isRetryable) throw err   // auth / key errors — stop immediately
+      lastErr = err
+      console.warn(`[chat] ${model} failed (${msg.slice(0, 80)}) — trying next model`)
+      // Brief pause before next attempt
+      await new Promise(r => setTimeout(r, 800))
+    }
   }
-  return response.text?.trim() || 'No response received.'
+  throw lastErr
 }
 
 async function askGroq(history, userMessage, pageHint, image) {
