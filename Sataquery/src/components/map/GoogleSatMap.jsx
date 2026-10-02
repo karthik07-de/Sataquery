@@ -30,10 +30,10 @@ L.Icon.Default.mergeOptions({
 })
 
 const TILE_PROVIDERS = {
-  // Esri Clarity — real satellite imagery, no key, no watermark
+  // Esri ArcGIS Online — real satellite imagery, no key
   satellite: {
-    url:        'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr:       'Powered by Esri &mdash; Source: Esri, Maxar, Earthstar Geographics',
+    url:        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr:       'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
     subdomains: '',
   },
   // OSM dark for dark mode

@@ -2,11 +2,8 @@
  * SatMap — Leaflet-based interactive map for SatQuery AI.
  *
  * Supports two modes controlled by `viewMode` prop:
- *   'map'       → OpenStreetMap (dark Carto tiles)
- *   'satellite' → ArcGIS World Imagery (free, no API key)
- *
- * Also handles overlays (rectangles, circles, markers, polygons)
- * from AI analysis results.
+ *   'map'       → OpenStreetMap street tiles
+ *   'satellite' → Esri World Imagery (real satellite photos, no API key)
  *
  * Props:
  *   center      [lat, lng]
@@ -31,29 +28,18 @@ L.Icon.Default.mergeOptions({
 
 /* ── Tile providers — no API key required ── */
 const TILES = {
-  // Dark road map — OSM with dark CSS filter
+  // Street / road map — OpenStreetMap
   map: {
     url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
     attr:       '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
     maxZoom:    19,
-    subdomains: '',
     className:  'map-tiles-dark',
   },
-  // Real satellite imagery — Esri Clarity (actual aerial/satellite photos, no key)
+  // Real satellite imagery — Esri World Imagery (free, no key)
   satellite: {
-    url:        'https://clarity.maptiles.arcgis.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
-    attr:       'Powered by Esri | Maxar, Earthstar Geographics',
+    url:        'https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',
+    attr:       'Tiles &copy; Esri &mdash; Source: Esri, Maxar, Earthstar Geographics, and the GIS User Community',
     maxZoom:    19,
-    subdomains: '',
-    crossOrigin: true,
-  },
-  // Labels overlay on satellite — OSM labels only
-  labels: {
-    url:        'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-    attr:       '',
-    maxZoom:    19,
-    subdomains: '',
-    opacity:    0,
   },
 }
 
@@ -70,6 +56,11 @@ const LOCATION_ICON = L.divIcon({
   popupAnchor:[0, -36],
 })
 
+/** Returns the right tile config — any non-'map' value defaults to satellite */
+function getTileCfg(viewMode) {
+  return viewMode === 'map' ? TILES.map : TILES.satellite
+}
+
 export default function SatMap({
   center     = [35.68, 139.69],
   zoom       = 11,
@@ -79,12 +70,15 @@ export default function SatMap({
   onMouseMove,
   className  = '',
 }) {
-  const containerRef   = useRef(null)
-  const mapRef         = useRef(null)
-  const tileLayerRef   = useRef(null)
-  const labelLayerRef  = useRef(null)
-  const overlayLayersRef = useRef([])
+  const containerRef      = useRef(null)
+  const mapRef            = useRef(null)
+  const tileLayerRef      = useRef(null)
+  const overlayLayersRef  = useRef([])
   const locationMarkerRef = useRef(null)
+
+  // Keep a ref to viewMode so the init effect always uses the latest value
+  const viewModeRef = useRef(viewMode)
+  useEffect(() => { viewModeRef.current = viewMode }, [viewMode])
 
   /* ── Initialise Leaflet map once ── */
   useEffect(() => {
@@ -93,24 +87,18 @@ export default function SatMap({
     const map = L.map(containerRef.current, {
       center,
       zoom,
-      zoomControl:       false,
+      zoomControl:        false,
       attributionControl: true,
     })
     mapRef.current = map
 
-    // Start with satellite tiles
-    const tileMode = viewMode === 'map' ? 'map' : 'satellite'
-    const tileCfg = TILES[tileMode]
+    // Use the current viewMode (via ref) so we always start on the right tiles
+    const tileCfg = getTileCfg(viewModeRef.current)
     tileLayerRef.current = L.tileLayer(tileCfg.url, {
       attribution: tileCfg.attr,
       maxZoom:     tileCfg.maxZoom,
-      subdomains:  tileCfg.subdomains || '',
-      className:   tileCfg.className  || '',
-      crossOrigin: tileCfg.crossOrigin || false,
+      className:   tileCfg.className || '',
     }).addTo(map)
-
-    // No labels overlay — satellite tiles already contain labels
-    labelLayerRef.current = null
 
     // Mouse-move for coordinate readout
     map.on('mousemove', (e) => {
@@ -121,42 +109,26 @@ export default function SatMap({
 
     return () => {
       map.remove()
-      mapRef.current = null
-      tileLayerRef.current = null
-      labelLayerRef.current = null
+      mapRef.current        = null
+      tileLayerRef.current  = null
     }
   }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
-  /* ── React to viewMode changes ── */
+  /* ── React to viewMode changes after mount ── */
   useEffect(() => {
     const map = mapRef.current
     if (!map) return
 
-    const tileMode = viewMode === 'map' ? 'map' : 'satellite'
-    const tileCfg  = TILES[tileMode]
+    const tileCfg = getTileCfg(viewMode)
 
-    // Swap tile layer
     if (tileLayerRef.current) {
       map.removeLayer(tileLayerRef.current)
     }
     tileLayerRef.current = L.tileLayer(tileCfg.url, {
       attribution: tileCfg.attr,
       maxZoom:     tileCfg.maxZoom,
-      subdomains:  tileCfg.subdomains || 'abc',
+      className:   tileCfg.className || '',
     }).addTo(map)
-
-    // Labels overlay — only for satellite
-    if (labelLayerRef.current) {
-      map.removeLayer(labelLayerRef.current)
-      labelLayerRef.current = null
-    }
-    if (tileMode === 'satellite') {
-      labelLayerRef.current = L.tileLayer(TILES.labels.url, {
-        attribution: '',
-        maxZoom:     19,
-        opacity:     0.8,
-      }).addTo(map)
-    }
   }, [viewMode])
 
   /* ── React to center/zoom prop changes ── */
